@@ -4,6 +4,6 @@ module.exports = {
   theme: {
     extend: {},
   },
-  darkMode: "media", // class
+  darkMode: "media", // media : 컴퓨터 설정, class : js내용으로 따라감.
   plugins: [],
 };
