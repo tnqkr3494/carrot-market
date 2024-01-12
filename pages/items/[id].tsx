@@ -28,7 +28,7 @@ const ItemDetail: NextPage = () => {
             motherfucker to get shot. You understand?
           </p>
           <div className="flex items-center space-x-2">
-            <button className="flex-1 rounded-md bg-orange-500 p-2 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+            <button className="flex-1 rounded-md bg-orange-500 p-2 text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
               Talk to seller
             </button>
             <svg
