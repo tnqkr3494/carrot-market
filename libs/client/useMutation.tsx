@@ -1,8 +1,12 @@
 import { useState } from "react";
 
+interface DataOK {
+  ok: boolean;
+}
+
 interface UseMutationState {
   loading: boolean;
-  data?: object;
+  data?: DataOK;
   error?: object;
 }
 
@@ -15,6 +19,7 @@ export default function useMutation(url: string): UseMutationResult {
     error: undefined,
   });
   function mutation(data: any) {
+    console.log(data);
     setState((prev) => ({ ...prev, loading: true }));
     fetch(url, {
       method: "POST",
@@ -24,7 +29,7 @@ export default function useMutation(url: string): UseMutationResult {
       body: JSON.stringify(data),
     })
       .then((response) => response.json().catch(() => {}))
-      .then((data) => setState((prev) => ({ ...prev, data })))
+      .then((data) => setState((prev) => ({ ...prev, data }))) //같은 data가 아닌 callback함수에서 받은 res값
       .catch((error) => setState((prev) => ({ ...prev, error })))
       .finally(() => setState((prev) => ({ ...prev, loading: false })));
   }

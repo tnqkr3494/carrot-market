@@ -29,7 +29,7 @@ async function handler(
       },
     },
   });
-  if (email) {
+  /*if (email) {
     const mailOptions = {
       from: process.env.MAIL_ID,
       to: email,
@@ -50,7 +50,7 @@ async function handler(
     );
     smtpTransport.close();
     console.log(result);
-  }
+  }*/
   return res.json({ ok: true });
 }
 
