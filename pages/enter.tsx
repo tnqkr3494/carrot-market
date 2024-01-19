@@ -40,12 +40,12 @@ const Enter: NextPage = () => {
     confirmToken(validForm);
   };
 
-  const route = useRouter();
+  const router = useRouter();
   useEffect(() => {
     if (tokenData?.ok) {
-      route.push("/");
+      router.push("/");
     }
-  }, [tokenData?.ok]);
+  }, [tokenData?.ok, router]);
   return (
     <div className="mt-16 px-4">
       <h3 className="text-center text-3xl font-bold">Enter to Carrot</h3>
