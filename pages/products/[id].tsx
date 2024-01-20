@@ -4,10 +4,21 @@ import Layout from "../../components/layout";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { Product, User } from "@prisma/client";
+
+interface ProductWithUser extends Product {
+  user: User;
+}
+
+interface ItemDetailResponse {
+  ok: boolean;
+  product: ProductWithUser;
+  relatedProducts: Product[];
+}
 
 const ItemDetail: NextPage = () => {
   const router = useRouter();
-  const { data } = useSWR(
+  const { data } = useSWR<ItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null,
   );
   return (
@@ -19,7 +30,7 @@ const ItemDetail: NextPage = () => {
             <div className="h-12 w-12 rounded-full bg-slate-300" />
             <div>
               <p className="text-sm font-medium text-gray-700">
-                {data?.product.user?.name}
+                {data?.product?.user?.name}
               </p>
               <Link
                 legacyBehavior
@@ -64,12 +75,16 @@ const ItemDetail: NextPage = () => {
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Similar items</h2>
           <div className=" mt-6 grid grid-cols-2 gap-4">
-            {[1, 2, 3, 4, 5, 6].map((_, i) => (
-              <div key={i}>
-                <div className="mb-4 h-56 w-full bg-slate-300" />
-                <h3 className="-mb-1 text-gray-700">Galaxy S60</h3>
-                <span className="text-sm font-medium text-gray-900">$6</span>
-              </div>
+            {data?.relatedProducts?.map((product) => (
+              <Link legacyBehavior href={`/products/${product.id}`}>
+                <a key={product.id}>
+                  <div className="mb-4 h-56 w-full bg-slate-300" />
+                  <h3 className="-mb-1 text-gray-700">{product.name}</h3>
+                  <span className="text-sm font-medium text-gray-900">
+                    {product.price}
+                  </span>
+                </a>
+              </Link>
             ))}
           </div>
         </div>

@@ -18,7 +18,7 @@ export default function Layout({
 }: LayoutProps) {
   const router = useRouter();
   const onClick = () => {
-    router.back();
+    router.push("/");
   };
   return (
     <div>
