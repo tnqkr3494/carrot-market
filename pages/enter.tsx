@@ -6,7 +6,6 @@ import { cls } from "../libs/client/utils";
 import { useForm } from "react-hook-form";
 import useMutation from "@/libs/client/useMutation";
 import { useRouter } from "next/router";
-import { useSWRConfig } from "swr";
 
 interface EnterForm {
   email?: string;

@@ -3,13 +3,44 @@ import Button from "../../components/button";
 import Input from "../../components/input";
 import Layout from "../../components/layout";
 import TextArea from "../../components/textarea";
+import { useForm } from "react-hook-form";
+import useMutation from "@/libs/client/useMutation";
+import { useRouter } from "next/router";
+import { Product } from "@prisma/client";
+import { useEffect } from "react";
+
+interface UploadProductForm {
+  name: string;
+  price: number;
+  description: string;
+}
+
+interface UploadProductMutation {
+  ok: boolean;
+  product: Product;
+}
 
 const Upload: NextPage = () => {
+  const router = useRouter();
+  const { register, handleSubmit } = useForm<UploadProductForm>();
+  const [uploadProduct, { loading, data }] =
+    useMutation<UploadProductMutation>("/api/products");
+  const onvalid = (data: UploadProductForm) => {
+    if (loading) return;
+    uploadProduct(data);
+  };
+
+  useEffect(() => {
+    if (data?.ok) {
+      router.push(`/products/${data.product.id}`);
+    }
+  }, [data]);
+
   return (
     <Layout canGoBack title="Upload Product">
-      <form className="p-4 space-y-4">
+      <form className="space-y-4 p-4" onSubmit={handleSubmit(onvalid)}>
         <div>
-          <label className="w-full cursor-pointer text-gray-600 hover:border-orange-500 hover:text-orange-500 flex items-center justify-center border-2 border-dashed border-gray-300 h-48 rounded-md">
+          <label className="flex h-48 w-full cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-gray-300 text-gray-600 hover:border-orange-500 hover:text-orange-500">
             <svg
               className="h-12 w-12"
               stroke="currentColor"
@@ -27,8 +58,15 @@ const Upload: NextPage = () => {
             <input className="hidden" type="file" />
           </label>
         </div>
-        <Input required label="Name" name="name" type="text" />
         <Input
+          register={register("name", { required: true })}
+          required
+          label="Name"
+          name="name"
+          type="text"
+        />
+        <Input
+          register={register("price", { required: true })}
           required
           label="Price"
           placeholder="0.00"
@@ -36,7 +74,12 @@ const Upload: NextPage = () => {
           type="text"
           kind="price"
         />
-        <TextArea name="description" label="Description" />
+        <TextArea
+          register={register("description", { required: true })}
+          name="description"
+          label="Description"
+          required
+        />
         <Button text="Upload item" />
       </form>
     </Layout>
