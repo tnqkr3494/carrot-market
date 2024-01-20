@@ -6,6 +6,7 @@ import { cls } from "../libs/client/utils";
 import { useForm } from "react-hook-form";
 import useMutation from "@/libs/client/useMutation";
 import { useRouter } from "next/router";
+import { useSWRConfig } from "swr";
 
 interface EnterForm {
   email?: string;
@@ -46,6 +47,7 @@ const Enter: NextPage = () => {
       router.push("/");
     }
   }, [tokenData?.ok, router]);
+
   return (
     <div className="mt-16 px-4">
       <h3 className="text-center text-3xl font-bold">Enter to Carrot</h3>
