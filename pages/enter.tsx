@@ -16,10 +16,15 @@ interface TokenForm {
   token: string;
 }
 
+interface MutationResult {
+  ok: boolean;
+}
+
 const Enter: NextPage = () => {
-  const [enter, { loading, data, error }] = useMutation("/api/users/enter");
+  const [enter, { loading, data, error }] =
+    useMutation<MutationResult>("/api/users/enter");
   const [confirmToken, { loading: tokenLoading, data: tokenData }] =
-    useMutation("/api/users/confirm");
+    useMutation<MutationResult>("/api/users/confirm");
   const { register, reset, handleSubmit } = useForm<EnterForm>();
   const { register: tokenRegister, handleSubmit: tokenHandleSubmit } =
     useForm<TokenForm>();
