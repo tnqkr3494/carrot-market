@@ -5,6 +5,8 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Product, User } from "@prisma/client";
+import useMutation from "@/libs/client/useMutation";
+import { cls } from "@/libs/client/utils";
 
 interface ProductWithUser extends Product {
   user: User;
@@ -14,13 +16,22 @@ interface ItemDetailResponse {
   ok: boolean;
   product: ProductWithUser;
   relatedProducts: Product[];
+  isLinked: boolean;
 }
 
 const ItemDetail: NextPage = () => {
   const router = useRouter();
-  const { data } = useSWR<ItemDetailResponse>(
+  const { data, mutate } = useSWR<ItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null,
   );
+  const [toggleFav] = useMutation(`/api/products/${router.query.id}/fav`);
+
+  const onFavClick = () => {
+    if (!data) return;
+    mutate({ ...data, isLinked: !data.isLinked }, false);
+    toggleFav({});
+  };
+
   return (
     <Layout canGoBack>
       <div className="px-4  py-4">
@@ -52,7 +63,15 @@ const ItemDetail: NextPage = () => {
             <p className=" my-6 text-gray-700">{data?.product?.description}</p>
             <div className="flex items-center justify-between space-x-2">
               <Button large text="Talk to seller" />
-              <button className="flex items-center justify-center rounded-md p-3 text-gray-400 hover:bg-gray-100 hover:text-gray-500">
+              <button
+                onClick={onFavClick}
+                className={cls(
+                  "flex items-center justify-center rounded-md p-3",
+                  data?.isLinked
+                    ? " text-red-500 hover:bg-gray-100 hover:text-red-500"
+                    : "text-gray-400 hover:bg-gray-100 hover:text-gray-500",
+                )}
+              >
                 <svg
                   className="h-6 w-6 "
                   xmlns="http://www.w3.org/2000/svg"
@@ -76,8 +95,12 @@ const ItemDetail: NextPage = () => {
           <h2 className="text-2xl font-bold text-gray-900">Similar items</h2>
           <div className=" mt-6 grid grid-cols-2 gap-4">
             {data?.relatedProducts?.map((product) => (
-              <Link legacyBehavior href={`/products/${product.id}`}>
-                <a key={product.id}>
+              <Link
+                key={product.id}
+                legacyBehavior
+                href={`/products/${product.id}`}
+              >
+                <a>
                   <div className="mb-4 h-56 w-full bg-slate-300" />
                   <h3 className="-mb-1 text-gray-700">{product.name}</h3>
                   <span className="text-sm font-medium text-gray-900">
