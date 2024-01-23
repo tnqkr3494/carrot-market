@@ -4,6 +4,9 @@ import TextArea from "../../components/textarea";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { Answer, Post, User } from "@prisma/client";
+import useMutation from "@/libs/client/useMutation";
+import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 
 interface AnswerWithUser extends Answer {
   user: User;
@@ -20,13 +23,62 @@ interface PostWithUser extends Post {
 interface CommunityPostResponse {
   ok: boolean;
   post: PostWithUser;
+  isWondering: boolean;
+}
+
+interface AnswerForm {
+  answer: string;
+}
+
+interface AnswerResponse {
+  ok: boolean;
 }
 
 const CommunityPostDetail: NextPage = () => {
   const router = useRouter();
-  const { data, error } = useSWR<CommunityPostResponse>(
+  const { register, handleSubmit, reset } = useForm<AnswerForm>();
+  const { data, mutate } = useSWR<CommunityPostResponse>(
     router.query.id ? `/api/posts/${router.query.id}` : null,
   );
+  const [wonder, { loading }] = useMutation(
+    `/api/posts/${router.query.id}/wonder`,
+  );
+  const [sendAnswer, { data: answerData, loading: answerLoading }] =
+    useMutation<AnswerResponse>(`/api/posts/${router.query.id}/answers`);
+  const onWonderClick = () => {
+    if (!data) return;
+    mutate(
+      {
+        ...data,
+        post: {
+          ...data.post,
+          _count: {
+            ...data.post._count,
+            Wondering: data.isWondering
+              ? data.post._count.Wondering - 1
+              : data.post._count.Wondering + 1,
+          },
+        },
+        isWondering: !data.isWondering,
+      },
+      false,
+    );
+
+    if (!loading) {
+      wonder({});
+    }
+  };
+
+  const onValid = (data: AnswerForm) => {
+    if (answerLoading) return;
+    sendAnswer(data);
+  };
+
+  useEffect(() => {
+    if (answerData && answerData.ok) {
+      reset();
+    }
+  }, [answerData, reset]);
 
   return (
     <Layout canGoBack>
@@ -51,7 +103,10 @@ const CommunityPostDetail: NextPage = () => {
             {data?.post?.question}
           </div>
           <div className="mt-3 flex w-full space-x-5 border-b-[2px] border-t px-4 py-2.5  text-gray-700">
-            <span className="flex items-center space-x-2 text-sm">
+            <button
+              onClick={onWonderClick}
+              className="flex items-center space-x-2 text-sm"
+            >
               <svg
                 className="h-4 w-4"
                 fill="none"
@@ -67,7 +122,7 @@ const CommunityPostDetail: NextPage = () => {
                 ></path>
               </svg>
               <span>궁금해요 {data?.post?._count.Wondering}</span>
-            </span>
+            </button>
             <span className="flex items-center space-x-2 text-sm">
               <svg
                 className="h-4 w-4"
@@ -93,18 +148,17 @@ const CommunityPostDetail: NextPage = () => {
               <div className="h-8 w-8 rounded-full bg-slate-200" />
               <div>
                 <span className="block text-sm font-medium text-gray-700">
-                  {}
+                  {answer.user.name}
                 </span>
                 <span className="block text-xs text-gray-500 ">2시간 전</span>
-                <p className="mt-2 text-gray-700">
-                  The best mandu restaurant is the one next to my house.
-                </p>
+                <p className="mt-2 text-gray-700">{answer.answer}</p>
               </div>
             </div>
           ))}
         </div>
-        <div className="px-4">
+        <form onSubmit={handleSubmit(onValid)} className="px-4">
           <TextArea
+            register={register("answer", { required: true, minLength: 1 })}
             name="description"
             placeholder="Answer this question!"
             required
@@ -112,7 +166,7 @@ const CommunityPostDetail: NextPage = () => {
           <button className="mt-2 w-full rounded-md border border-transparent bg-orange-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ">
             Reply
           </button>
-        </div>
+        </form>
       </div>
     </Layout>
   );
