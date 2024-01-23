@@ -73,6 +73,8 @@ model Post {
   user      User        @relation(fields: [userId], references: [id])
   userId    Int
   question  String      @db.MediumText
+  latitude  Float?
+  longitude Float?
   Answer    Answer[]
   Wondering Wondering[]
 
