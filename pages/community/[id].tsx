@@ -68,17 +68,17 @@ const CommunityPostDetail: NextPage = () => {
       wonder({});
     }
   };
+  useEffect(() => {
+    if (answerData && answerData.ok) {
+      reset();
+      mutate(); //답변 올리자마자(answerData가 변경되면) 바로 화면에 반영되게 하는 코드
+    }
+  }, [answerData, reset]);
 
   const onValid = (data: AnswerForm) => {
     if (answerLoading) return;
     sendAnswer(data);
   };
-
-  useEffect(() => {
-    if (answerData && answerData.ok) {
-      reset();
-    }
-  }, [answerData, reset]);
 
   return (
     <Layout canGoBack>
