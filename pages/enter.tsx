@@ -8,8 +8,19 @@ import useMutation from "@/libs/client/useMutation";
 import { useRouter } from "next/router";
 import { useSWRConfig } from "swr";
 import dynamic from "next/dynamic";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-const BS = dynamic(() => import("@/components/BS"), { ssr: true });
+const BS = dynamic(
+  () =>
+    new Promise((resolve) =>
+      setTimeout(() => resolve(import("@/components/BS")), 10000),
+    ),
+  {
+    ssr: true,
+    loading: () => <Skeleton />,
+  },
+);
 
 interface EnterForm {
   email?: string;
