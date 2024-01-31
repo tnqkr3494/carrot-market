@@ -111,8 +111,9 @@ const Profile: NextPage = () => {
                   {review.createdBy.name}
                 </h4>
                 <div className="flex items-center">
-                  {[1, 2, 3, 4, 5].map((star) => (
+                  {[1, 2, 3, 4, 5].map((star, index) => (
                     <svg
+                      key={index}
                       className={cls(
                         "h-5 w-5",
                         review.score >= star
