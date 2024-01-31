@@ -7,6 +7,9 @@ import { useForm } from "react-hook-form";
 import useMutation from "@/libs/client/useMutation";
 import { useRouter } from "next/router";
 import { useSWRConfig } from "swr";
+import dynamic from "next/dynamic";
+
+const BS = dynamic(() => import("@/components/BS"), { ssr: true });
 
 interface EnterForm {
   email?: string;
@@ -120,14 +123,17 @@ const Enter: NextPage = () => {
                 />
               ) : null}
               {method === "phone" ? (
-                <Input
-                  register={register("phone", { required: true })}
-                  name="phone"
-                  label="Phone number"
-                  type="number"
-                  kind="phone"
-                  required
-                />
+                <>
+                  <BS />
+                  <Input
+                    register={register("phone", { required: true })}
+                    name="phone"
+                    label="Phone number"
+                    type="number"
+                    kind="phone"
+                    required
+                  />
+                </>
               ) : null}
               {method === "email" ? (
                 <Button text={loading ? "Loading" : "Get login link"} />
