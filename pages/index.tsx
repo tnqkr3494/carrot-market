@@ -3,8 +3,9 @@ import FloatingButton from "../components/floating-button";
 import Item from "../components/item";
 import Layout from "../components/layout";
 import useUser from "@/libs/client/useUser";
-import useSWR from "swr";
+import useSWR, { SWRConfig } from "swr";
 import { Product } from "@prisma/client";
+import client from "@/libs/server/client";
 
 export interface ProductWithCount extends Product {
   _count: {
@@ -28,7 +29,7 @@ const Home: NextPage = () => {
             key={product.id}
             title={product.name}
             price={product.price}
-            hearts={product._count.Fav}
+            hearts={product._count?.Fav || 0}
           />
         ))}
         <FloatingButton href="/products/upload">
@@ -53,4 +54,30 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+const Page: NextPage<{ products: Product[] }> = ({ products }) => {
+  return (
+    <SWRConfig
+      value={{
+        fallback: {
+          "/api/products": {
+            ok: true,
+            products,
+          },
+        },
+      }}
+    >
+      <Home />
+    </SWRConfig>
+  );
+};
+
+export async function getServerSideProps() {
+  const products = await client.product.findMany({});
+  return {
+    props: {
+      products: JSON.parse(JSON.stringify(products)), //Date.now()함수에 값으로 들어온 내용을 인식을 못해서 한 변환과정
+    },
+  };
+}
+
+export default Page;

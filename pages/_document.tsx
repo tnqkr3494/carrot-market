@@ -3,7 +3,6 @@ import { JSX } from "react";
 
 class CustomDocument extends Document {
   render(): JSX.Element {
-    console.log("Running Once");
     return (
       <Html lang="ko">
         <Head>
