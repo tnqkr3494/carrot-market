@@ -2,11 +2,13 @@ import Layout from "@/components/layout";
 import { readFileSync, readdirSync } from "fs";
 import matter from "gray-matter";
 import { NextPage } from "next";
+import Link from "next/link";
 
 interface Post {
   title: string;
   date: string;
   category: string;
+  slug: string;
 }
 
 const Blog: NextPage<{ blogPosts: Post[] }> = ({ blogPosts }) => {
@@ -16,7 +18,9 @@ const Blog: NextPage<{ blogPosts: Post[] }> = ({ blogPosts }) => {
       {blogPosts.map((post) => (
         <div className="mb-5">
           <div>
-            <span className="font-bold text-red-500">{post.title}</span>
+            <Link href={`/blog/${post.slug}`} legacyBehavior>
+              <a className="font-bold text-red-500">{post.title}</a>
+            </Link>
           </div>
           <span>
             {post.date} / {post.category}
@@ -31,7 +35,8 @@ export async function getStaticProps() {
   //readdirSync경로 주의!!!
   const blogPosts = readdirSync("./posts").map((post) => {
     const content = readFileSync(`./posts/${post}`, "utf-8");
-    return matter(content).data;
+    const [path, ignore] = post.split(".");
+    return { ...matter(content).data, slug: path };
   });
   return {
     props: {

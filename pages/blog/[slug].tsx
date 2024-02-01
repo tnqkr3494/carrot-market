@@ -9,7 +9,10 @@ import remarkHtml from "remark-html";
 const Post: NextPage<{ post: string; data: any }> = ({ post, data }) => {
   return (
     <Layout title={data.title}>
-      <div dangerouslySetInnerHTML={{ __html: post }}></div>
+      <div
+        className="blog-post-content"
+        dangerouslySetInnerHTML={{ __html: post }}
+      ></div>
     </Layout>
   );
 };
