@@ -1,5 +1,5 @@
 ---
-title: Welcome Everyone2
+title: Welcome Everyone
 date: 2024.02.01
 category: Hello
 ---

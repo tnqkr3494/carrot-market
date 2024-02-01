@@ -28,6 +28,7 @@ const Blog: NextPage<{ blogPosts: Post[] }> = ({ blogPosts }) => {
 };
 
 export async function getStaticProps() {
+  //readdirSync경로 주의!!!
   const blogPosts = readdirSync("./posts").map((post) => {
     const content = readFileSync(`./posts/${post}`, "utf-8");
     return matter(content).data;
