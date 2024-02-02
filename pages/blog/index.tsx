@@ -15,8 +15,8 @@ const Blog: NextPage<{ blogPosts: Post[] }> = ({ blogPosts }) => {
   return (
     <Layout title="Blog">
       <h1 className="mb-10 mt-5 text-center text-xl font-bold">Latest Posts</h1>
-      {blogPosts.map((post) => (
-        <div className="mb-5">
+      {blogPosts.map((post, index) => (
+        <div key={index} className="mb-5">
           <div>
             <Link href={`/blog/${post.slug}`} legacyBehavior>
               <a className="font-bold text-red-500">{post.title}</a>

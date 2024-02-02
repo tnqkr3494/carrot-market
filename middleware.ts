@@ -11,13 +11,14 @@ export function middleware(req: NextRequest, ev: NextFetchEvent) {
       return new Response("Plz don't be a bot. Be human.", { status: 403 });
     }
   }
-
-  if (
-    !req.url.includes("/enter") &&
-    !req.cookies.has("carrotsession") &&
-    !req.url.includes("/_next/")
-  ) {
-    return NextResponse.redirect(`${req.nextUrl.origin}/enter`);
+  if (!req.url.includes("/api")) {
+    if (
+      !req.url.includes("/enter") &&
+      !req.cookies.has("carrotsession") &&
+      !req.url.includes("/_next/")
+    ) {
+      return NextResponse.redirect(`${req.nextUrl.origin}/enter`);
+    }
   }
 
   return NextResponse.next();

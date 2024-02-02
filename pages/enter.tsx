@@ -37,7 +37,6 @@ interface MutationResult {
 }
 
 const Enter: NextPage = () => {
-  const { mutate } = useSWRConfig();
   const [enter, { loading, data, error }] =
     useMutation<MutationResult>("/api/users/enter");
   const [confirmToken, { loading: tokenLoading, data: tokenData }] =
@@ -65,9 +64,7 @@ const Enter: NextPage = () => {
   const router = useRouter();
   useEffect(() => {
     if (tokenData?.ok) {
-      mutate("/api/users/me", { ...data, ok: true });
-      // 처음 home으로 들어가면 useUser때문에 /api/users/me이 키값에 ok:false인 로그아웃상태가 캐시에 저장된다.
-      // 따라서 swr때문에 로그인을 해도 다시 로그인 페이지로 보내짐. 이를 해결하기 위해 로그인성공하면 mutate로 캐시값을 변경시킴.(버그해결)
+      //middleware로 인해 버그가 알아서 고쳐짐.
       router.push("/");
     }
   }, [tokenData?.ok, router]);

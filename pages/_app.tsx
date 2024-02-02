@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         strategy="lazyOnload"
       />
       {/* strategy : 스크립트 불러오는 타이밍 설정 */}
-      <Script
+      {/* <Script
         src="https://connect.facebook.net/en_US/sdk.js"
         onLoad={() => {
           window.fbAsyncInit = function () {
@@ -31,7 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             });
           };
         }}
-      />
+      /> */}
     </SWRConfig>
   );
 }
