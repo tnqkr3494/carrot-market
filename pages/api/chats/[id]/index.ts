@@ -14,18 +14,21 @@ async function handler(
   } = req;
 
   if (req.method === "GET") {
-    const chats = await client.talk.findMany({
+    const chats = await client.chatRoom.findUnique({
       where: {
-        chatRoomId: Number(id),
+        id: Number(id),
       },
-      select: {
-        id: true,
-        talk: true,
-        user: {
+      include: {
+        talk: {
           select: {
-            name: true,
-            avatar: true,
-            id: true,
+            talk: true,
+            user: {
+              select: {
+                name: true,
+                id: true,
+                avatar: true,
+              },
+            },
           },
         },
       },

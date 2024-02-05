@@ -3,33 +3,38 @@ import Layout from "../../components/layout";
 import Message from "../../components/message";
 import useSWR from "swr";
 import { useRouter } from "next/router";
-import { Talk, User } from "@prisma/client";
+import { ChatRoom, Talk, User } from "@prisma/client";
 import useUser from "@/libs/client/useUser";
 import { useForm } from "react-hook-form";
 import useMutation from "@/libs/client/useMutation";
 
-interface TalksWithUser extends Talk {
+interface TalkWithUser extends Talk {
   user: User;
 }
-interface chatsResponse {
+
+interface TalkInChatRoom extends ChatRoom {
+  talk: TalkWithUser[];
+}
+interface ChatsResponse {
   ok: boolean;
-  chats: TalksWithUser[];
+  chats: TalkInChatRoom;
 }
 
-interface talkForm {
+interface TalkForm {
   talk: string;
 }
 
 const ChatDetail: NextPage = () => {
   const { user } = useUser();
   const router = useRouter();
-  const { data } = useSWR<chatsResponse>(`/api/chats/${router.query.id}`);
+  const { data, mutate } = useSWR<ChatsResponse>(
+    router.query.id ? `/api/chats/${router.query.id}` : null,
+  );
   //query로 받아오는 id값은 채팅방의 id
   const [postTalk] = useMutation(`/api/chats/${router.query.id}`);
-  const { register, handleSubmit, reset } = useForm<talkForm>();
+  const { register, handleSubmit, reset } = useForm<TalkForm>();
 
-  const onValid = (data: talkForm) => {
-    console.log(data);
+  const onValid = (data: TalkForm) => {
     reset();
     postTalk(data);
   };
@@ -37,12 +42,12 @@ const ChatDetail: NextPage = () => {
   return (
     <Layout canGoBack title="Steve">
       <div className="space-y-4 px-4 py-10 pb-16">
-        {data?.chats.map((chat) => (
+        {data?.chats.talk.map((chat, index) => (
           <Message
-            key={chat.id}
-            name={chat.user.name}
+            key={index}
             message={chat.talk}
             reversed={chat.user.id === user?.id}
+            name={chat.user.name}
           />
         ))}
         <form
