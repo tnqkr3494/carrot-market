@@ -8,7 +8,7 @@ interface MessageProps {
 
 export default function Message({
   message,
-  avatarUrl,
+  avatarUrl = "null",
   reversed,
 }: MessageProps) {
   return (
