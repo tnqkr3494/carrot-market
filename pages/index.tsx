@@ -73,6 +73,7 @@ const Page: NextPage<{ products: Product[] }> = ({ products }) => {
 //swr과 ssr을 같이 쓰려고 swrconfig를 이용함.
 
 export async function getServerSideProps() {
+  console.log("ssr");
   const products = await client.product.findMany({});
   return {
     props: {

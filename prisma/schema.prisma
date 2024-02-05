@@ -31,6 +31,10 @@ model User {
   Purchase        Purchase[]
   Stream          Stream[]
   Message         Message[]
+
+  hostCharRoom    ChatRoom[] @relation(name: "HostChatRoom")
+  invitedChatRoom ChatRoom[] @relation(name: "InvitedChatRoom")
+  talk            Talk[]
 }
 
 model Token {
@@ -183,4 +187,32 @@ model Message {
 
   @@index([userId])
   @@index([streamId])
+}
+
+model ChatRoom {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  host      User     @relation(name: "HostChatRoom", fields: [hostId], references: [id], onDelete: Cascade)
+  hostId    Int
+  invited   User     @relation(name: "InvitedChatRoom", fields: [invitedId], references: [id], onDelete: Cascade)
+  invitedId Int
+  talk      Talk[]
+
+  @@index([hostId])
+  @@index([invitedId])
+}
+
+model Talk {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  talk       String   @db.MediumText
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+  chatRoomId Int
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+
+  @@index([chatRoomId])
+  @@index([userId])
 }
