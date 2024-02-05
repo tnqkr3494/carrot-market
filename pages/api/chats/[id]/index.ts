@@ -10,6 +10,7 @@ async function handler(
   const {
     session: { user },
     query: { id },
+    body: { talk },
   } = req;
 
   if (req.method === "GET") {
@@ -30,6 +31,25 @@ async function handler(
       },
     });
     res.json({ ok: true, chats });
+  }
+
+  if (req.method === "POST") {
+    const chat = await client.talk.create({
+      data: {
+        talk,
+        user: {
+          connect: {
+            id: user?.id,
+          },
+        },
+        chatRoom: {
+          connect: {
+            id: Number(id),
+          },
+        },
+      },
+    });
+    res.json({ ok: true, chat });
   }
 }
 

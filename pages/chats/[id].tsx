@@ -5,6 +5,8 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import { Talk, User } from "@prisma/client";
 import useUser from "@/libs/client/useUser";
+import { useForm } from "react-hook-form";
+import useMutation from "@/libs/client/useMutation";
 
 interface TalksWithUser extends Talk {
   user: User;
@@ -14,11 +16,24 @@ interface chatsResponse {
   chats: TalksWithUser[];
 }
 
+interface talkForm {
+  talk: string;
+}
+
 const ChatDetail: NextPage = () => {
   const { user } = useUser();
   const router = useRouter();
   const { data } = useSWR<chatsResponse>(`/api/chats/${router.query.id}`);
   //query로 받아오는 id값은 채팅방의 id
+  const [postTalk] = useMutation(`/api/chats/${router.query.id}`);
+  const { register, handleSubmit, reset } = useForm<talkForm>();
+
+  const onValid = (data: talkForm) => {
+    console.log(data);
+    reset();
+    postTalk(data);
+  };
+
   return (
     <Layout canGoBack title="Steve">
       <div className="space-y-4 px-4 py-10 pb-16">
@@ -30,9 +45,13 @@ const ChatDetail: NextPage = () => {
             reversed={chat.user.id === user?.id}
           />
         ))}
-        <form className="fixed inset-x-0 bottom-0  bg-white py-2">
+        <form
+          onSubmit={handleSubmit(onValid)}
+          className="fixed inset-x-0 bottom-0  bg-white py-2"
+        >
           <div className="relative mx-auto flex w-full  max-w-md items-center">
             <input
+              {...register("talk", { required: true, minLength: 2 })}
               type="text"
               className="w-full rounded-full border-gray-300 pr-12 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500"
             />
