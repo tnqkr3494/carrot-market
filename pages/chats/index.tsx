@@ -3,7 +3,6 @@ import Link from "next/link";
 import Layout from "../../components/layout";
 import { ChatRoom, Talk, User } from "@prisma/client";
 import useSWR from "swr";
-import useUser from "@/libs/client/useUser";
 
 interface chatRoomsWithUser extends ChatRoom {
   invited: User;
@@ -15,7 +14,6 @@ interface chatRoomsResponse {
 }
 
 const Chats: NextPage = () => {
-  const user = useUser();
   const { data } = useSWR<chatRoomsResponse>("/api/chats");
   return (
     <Layout hasTabBar title="채팅">
