@@ -37,19 +37,38 @@ const ChatDetail: NextPage = () => {
   const onValid = (data: TalkForm) => {
     reset();
     postTalk(data);
+    mutate(
+      (prev) =>
+        prev &&
+        ({
+          ...prev,
+          chats: {
+            ...prev.chats,
+            talk: [
+              ...prev.chats.talk,
+              { id: Date.now(), talk: data.talk, user: { ...user } },
+            ],
+          },
+        } as any),
+      false,
+    );
   };
 
   return (
     <Layout canGoBack title="Steve">
       <div className="space-y-4 px-4 py-10 pb-16">
-        {data?.chats.talk.map((chat, index) => (
-          <Message
-            key={index}
-            message={chat.talk}
-            reversed={chat.user.id === user?.id}
-            name={chat.user.name}
-          />
-        ))}
+        {data ? (
+          data?.chats.talk.map((chat, index) => (
+            <Message
+              key={index}
+              message={chat.talk}
+              reversed={chat.user.id === user?.id}
+              name={chat.user.name}
+            />
+          ))
+        ) : (
+          <div>Loading</div>
+        )}
         <form
           onSubmit={handleSubmit(onValid)}
           className="fixed inset-x-0 bottom-0  bg-white py-2"
