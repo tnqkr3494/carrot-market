@@ -29,6 +29,9 @@ const ChatDetail: NextPage = () => {
   const router = useRouter();
   const { data, mutate } = useSWR<ChatsResponse>(
     router.query.id ? `/api/chats/${router.query.id}` : null,
+    {
+      refreshInterval: 1000,
+    },
   );
   //query로 받아오는 id값은 채팅방의 id
   const [postTalk] = useMutation(`/api/chats/${router.query.id}`);
