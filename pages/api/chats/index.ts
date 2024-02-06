@@ -43,6 +43,13 @@ async function handler(
         },
         take: 1,
       },
+      product: {
+        select: {
+          id: true,
+          name: true,
+          price: true,
+        },
+      },
     },
   });
 

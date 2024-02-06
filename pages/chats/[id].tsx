@@ -14,6 +14,10 @@ interface TalkWithUser extends Talk {
 
 interface TalkInChatRoom extends ChatRoom {
   talk: TalkWithUser[];
+  product: {
+    name: string;
+    price: number;
+  };
 }
 interface ChatsResponse {
   ok: boolean;
@@ -58,7 +62,7 @@ const ChatDetail: NextPage = () => {
   };
 
   return (
-    <Layout canGoBack title="Steve">
+    <Layout canGoBack title={`물품이름 : ${data?.chats.product.name}`}>
       <div className="space-y-4 px-4 py-10 pb-16">
         {data ? (
           data?.chats.talk.map((chat, index) => (

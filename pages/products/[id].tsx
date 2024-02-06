@@ -26,7 +26,7 @@ const ItemDetail: NextPage = () => {
   );
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/fav`);
   const [makeChatRoom] = useMutation(
-    `/api/products/${data?.product.user.id}/chat`,
+    `/api/products/${router.query.id}/chat?name=${data?.product.user.id}`,
   );
 
   const onFavClick = () => {

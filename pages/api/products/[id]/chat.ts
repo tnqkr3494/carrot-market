@@ -8,18 +8,27 @@ async function handler(
   res: NextApiResponse<ResponseType>,
 ) {
   const {
-    query: { id },
+    query: { id, name },
     session: { user },
   } = req;
 
   const invitedUser = await client.user.findUnique({
     where: {
-      id: Number(id),
+      id: Number(name),
     },
   });
 
+  console.log(req.query);
+
+  const productName = await client.product.findUnique({
+    where: {
+      id: Number(id),
+    },
+  });
+  console.log(req.query);
+
   //물건을 파는 사람이 존재하면
-  if (invitedUser) {
+  if (invitedUser && productName) {
     const chatRoom = await client.chatRoom.create({
       data: {
         host: {
@@ -30,6 +39,11 @@ async function handler(
         invited: {
           connect: {
             id: invitedUser.id,
+          },
+        },
+        product: {
+          connect: {
+            id: productName.id,
           },
         },
       },

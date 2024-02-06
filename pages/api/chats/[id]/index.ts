@@ -31,6 +31,12 @@ async function handler(
             },
           },
         },
+        product: {
+          select: {
+            name: true,
+            price: true,
+          },
+        },
       },
     });
     res.json({ ok: true, chats });

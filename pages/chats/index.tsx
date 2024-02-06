@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import Layout from "../../components/layout";
-import { ChatRoom, Talk, User } from "@prisma/client";
+import { ChatRoom, Product, Talk, User } from "@prisma/client";
 import useSWR from "swr";
 import useUser from "@/libs/client/useUser";
 
@@ -9,6 +9,7 @@ interface chatRoomsWithUser extends ChatRoom {
   invited: User;
   host: User;
   talk: Talk[];
+  product: Product;
 }
 interface chatRoomsResponse {
   ok: boolean;
@@ -28,9 +29,10 @@ const Chats: NextPage = () => {
                 <div className="h-12 w-12 rounded-full bg-slate-300" />
                 <div>
                   <p className="text-gray-700">
-                    대화상대 :
+                    물품이름 :{" "}
+                    <span className="font-bold">{room.product.name}</span> /
+                    대화상대 :{" "}
                     <span className="font-bold">
-                      {" "}
                       {room.invited.id === user?.id
                         ? room.host.name
                         : room.invited.name}
