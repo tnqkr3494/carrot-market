@@ -25,7 +25,9 @@ const Chats: NextPage = () => {
                 <div className="h-12 w-12 rounded-full bg-slate-300" />
                 <div>
                   <p className="text-gray-700">{room.invited.name}</p>
-                  <p className="text-sm  text-gray-500">{room.talk[0].talk}</p>
+                  <p className="text-sm  text-gray-500">
+                    {room.talk[0]?.talk ? room.talk[0].talk : ""}
+                  </p>
                 </div>
               </a>
             </Link>
