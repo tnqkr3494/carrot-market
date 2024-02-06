@@ -28,7 +28,7 @@ const Chats: NextPage = () => {
               <a className="flex cursor-pointer items-center space-x-3 px-4 py-3">
                 <div className="h-12 w-12 rounded-full bg-slate-300" />
                 <div>
-                  <p className="text-gray-700">
+                  <p className=" text-gray-700">
                     물품이름 :{" "}
                     <span className="font-bold">{room.product.name}</span> /
                     대화상대 :{" "}
