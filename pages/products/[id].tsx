@@ -25,11 +25,19 @@ const ItemDetail: NextPage = () => {
     router.query.id ? `/api/products/${router.query.id}` : null,
   );
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/fav`);
+  const [makeChatRoom] = useMutation(
+    `/api/products/${data?.product.user.id}/chat`,
+  );
 
   const onFavClick = () => {
     if (!data) return;
     mutate({ ...data, isLinked: !data.isLinked }, false);
     toggleFav({});
+  };
+
+  const onTalkClick = () => {
+    if (!data) return;
+    makeChatRoom({});
   };
 
   return (
@@ -62,7 +70,7 @@ const ItemDetail: NextPage = () => {
             </span>
             <p className=" my-6 text-gray-700">{data?.product?.description}</p>
             <div className="flex items-center justify-between space-x-2">
-              <Button large text="Talk to seller" />
+              <Button large text="Talk to seller" onClick={onTalkClick} />
               <button
                 onClick={onFavClick}
                 className={cls(
