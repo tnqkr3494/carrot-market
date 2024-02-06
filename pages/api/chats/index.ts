@@ -13,11 +13,26 @@ async function handler(
 
   const chatRooms = await client.chatRoom.findMany({
     where: {
-      hostId: user?.id,
+      OR: [
+        {
+          hostId: user?.id,
+        },
+        {
+          invitedId: user?.id,
+        },
+      ],
     },
     include: {
       invited: {
         select: {
+          id: true,
+          name: true,
+          avatar: true,
+        },
+      },
+      host: {
+        select: {
+          id: true,
           name: true,
           avatar: true,
         },
