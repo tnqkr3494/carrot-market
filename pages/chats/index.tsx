@@ -22,7 +22,7 @@ const Chats: NextPage = () => {
   return (
     <Layout hasTabBar title="채팅">
       <div className="divide-y-[1px] ">
-        {data ? (
+        {data?.chatRooms ? (
           data.chatRooms.map((room) => (
             <Link href={`/chats/${room.id}`} key={room.id} legacyBehavior>
               <a className="flex cursor-pointer items-center space-x-3 px-4 py-3">

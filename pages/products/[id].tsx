@@ -85,8 +85,11 @@ const ItemDetail: NextPage = () => {
                   onClick={onTalkClick}
                 />
               ) : (
-                <Link href={`/chats/${data?.findChatRoom.id}`}>
-                  <button>Go To Chating Room</button>
+                <Link
+                  className="w-full"
+                  href={`/chats/${data?.findChatRoom.id}`}
+                >
+                  <Button large text="Go To Chatting Room" />
                 </Link>
               )}
               <button

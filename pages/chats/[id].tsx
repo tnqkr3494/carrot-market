@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Layout from "../../components/layout";
 import Message from "../../components/message";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { useRouter } from "next/router";
 import { ChatRoom, Talk, User } from "@prisma/client";
 import useUser from "@/libs/client/useUser";
@@ -65,16 +65,20 @@ const ChatDetail: NextPage = () => {
     );
   };
 
+  const { mutate: bugMutate } = useSWRConfig();
+
   const onExit = () => {
     if (loading) return;
     deleteRoom({});
+    bugMutate("/api/chats", true);
+    //채팅방을 들어가자마자 빠르게 나가기를 클릭하면 chats페이지에서 프론트엔드상으로 채팅방이 사라지지 않는 버그 해결
   };
 
   useEffect(() => {
     if (deletedRoomData?.ok) {
       router.push("/chats");
     }
-  }, [deletedRoomData]);
+  }, [deletedRoomData, router]);
 
   return (
     <Layout canGoBack title={`물품이름 : ${data?.chats.product.name}`}>
