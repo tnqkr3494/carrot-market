@@ -7,6 +7,7 @@ import { ChatRoom, Talk, User } from "@prisma/client";
 import useUser from "@/libs/client/useUser";
 import { useForm } from "react-hook-form";
 import useMutation from "@/libs/client/useMutation";
+import { useEffect } from "react";
 
 interface TalkWithUser extends Talk {
   user: User;
@@ -40,7 +41,9 @@ const ChatDetail: NextPage = () => {
   //query로 받아오는 id값은 채팅방의 id
   const [postTalk] = useMutation(`/api/chats/${router.query.id}`);
   const { register, handleSubmit, reset } = useForm<TalkForm>();
-  const [deleteRoom] = useMutation(`/api/chats/${router.query.id}/del`);
+  const [deleteRoom, { loading, data: deletedRoomData }] = useMutation<{
+    ok: true;
+  }>(`/api/chats/${router.query.id}/del`);
 
   const onValid = (data: TalkForm) => {
     reset();
@@ -63,9 +66,15 @@ const ChatDetail: NextPage = () => {
   };
 
   const onExit = () => {
-    router.push("/chats");
+    if (loading) return;
     deleteRoom({});
   };
+
+  useEffect(() => {
+    if (deletedRoomData?.ok) {
+      router.push("/chats");
+    }
+  }, [deletedRoomData]);
 
   return (
     <Layout canGoBack title={`물품이름 : ${data?.chats.product.name}`}>

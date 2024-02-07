@@ -70,7 +70,9 @@ const ItemDetail: NextPage = () => {
             </span>
             <p className=" my-6 text-gray-700">{data?.product?.description}</p>
             <div className="flex items-center justify-between space-x-2">
-              <Button large text="Talk to seller" onClick={onTalkClick} />
+              <Link href="">
+                <Button large text="Talk to seller" onClick={onTalkClick} />
+              </Link>
               <button
                 onClick={onFavClick}
                 className={cls(
