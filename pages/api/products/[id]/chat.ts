@@ -51,6 +51,7 @@ async function handler(
     console.log("true");
     res.json({
       ok: true,
+      chatRoom,
     });
   }
 

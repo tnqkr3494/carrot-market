@@ -4,9 +4,10 @@ import Layout from "../../components/layout";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Product, User } from "@prisma/client";
+import { ChatRoom, Product, User } from "@prisma/client";
 import useMutation from "@/libs/client/useMutation";
 import { cls } from "@/libs/client/utils";
+import { useEffect, useState } from "react";
 
 interface ProductWithUser extends Product {
   user: User;
@@ -17,6 +18,7 @@ interface ItemDetailResponse {
   product: ProductWithUser;
   relatedProducts: Product[];
   isLinked: boolean;
+  findChatRoom: ChatRoom;
 }
 
 const ItemDetail: NextPage = () => {
@@ -25,7 +27,7 @@ const ItemDetail: NextPage = () => {
     router.query.id ? `/api/products/${router.query.id}` : null,
   );
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/fav`);
-  const [makeChatRoom] = useMutation(
+  const [makeChatRoom, { loading, data: check }] = useMutation<{ ok: boolean }>(
     `/api/products/${router.query.id}/chat?name=${data?.product.user.id}`,
   );
 
@@ -36,9 +38,15 @@ const ItemDetail: NextPage = () => {
   };
 
   const onTalkClick = () => {
-    if (!data) return;
+    if (loading) return;
     makeChatRoom({});
   };
+
+  useEffect(() => {
+    if (check?.ok) {
+      router.push("/chats");
+    }
+  }, [check]);
 
   return (
     <Layout canGoBack>
@@ -70,9 +78,17 @@ const ItemDetail: NextPage = () => {
             </span>
             <p className=" my-6 text-gray-700">{data?.product?.description}</p>
             <div className="flex items-center justify-between space-x-2">
-              <Link href="">
-                <Button large text="Talk to seller" onClick={onTalkClick} />
-              </Link>
+              {!data?.findChatRoom ? (
+                <Button
+                  large
+                  text={loading ? "Loading" : "Talk to seller"}
+                  onClick={onTalkClick}
+                />
+              ) : (
+                <Link href={`/chats/${data?.findChatRoom.id}`}>
+                  <button>Go To Chating Room</button>
+                </Link>
+              )}
               <button
                 onClick={onFavClick}
                 className={cls(

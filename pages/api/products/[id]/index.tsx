@@ -55,11 +55,22 @@ async function handler(
     }),
   );
 
+  const findChatRoom = await client.chatRoom.findFirst({
+    where: {
+      productId: Number(id),
+      hostId: user?.id,
+    },
+    select: {
+      id: true,
+    },
+  });
+
   res.json({
     ok: true,
     product,
     relatedProducts,
     isLinked,
+    findChatRoom,
   });
 }
 
