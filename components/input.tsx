@@ -1,7 +1,7 @@
 import type { UseFormRegisterReturn } from "react-hook-form";
 
 interface InputProps {
-  label: string;
+  label?: string;
   name: string;
   kind?: "text" | "phone" | "price";
   type: string;
@@ -21,12 +21,14 @@ export default function Input({
 }: InputProps) {
   return (
     <div>
-      <label
-        className="mb-1 block text-sm font-medium text-gray-700"
-        htmlFor={name}
-      >
-        {label}
-      </label>
+      {label ? (
+        <label
+          className="mb-1 block text-sm font-medium text-gray-700"
+          htmlFor={name}
+        >
+          {label}
+        </label>
+      ) : null}
       {kind === "text" ? (
         <div className="relative flex items-center  rounded-md shadow-sm">
           <input

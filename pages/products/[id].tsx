@@ -8,6 +8,8 @@ import { ChatRoom, Product, User } from "@prisma/client";
 import useMutation from "@/libs/client/useMutation";
 import { cls } from "@/libs/client/utils";
 import { useEffect, useState } from "react";
+import Input from "@/components/input";
+import { useForm } from "react-hook-form";
 
 interface ProductWithUser extends Product {
   user: User;
@@ -21,8 +23,13 @@ interface ItemDetailResponse {
   findChatRoom: ChatRoom;
 }
 
+interface BuyForm {
+  price: string;
+}
+
 const ItemDetail: NextPage = () => {
   const router = useRouter();
+  const { register, handleSubmit } = useForm<BuyForm>();
   const { data, mutate } = useSWR<ItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null,
   );
@@ -46,8 +53,12 @@ const ItemDetail: NextPage = () => {
     makeChatRoom({});
   };
 
-  const onBuyClick = () => {
+  const onValid = ({ price }: BuyForm) => {
     if (buyLoading) return;
+    if (Number(price) !== data?.product.price) {
+      console.log("price error");
+      return;
+    }
     buyProduct({});
   };
 
@@ -97,7 +108,6 @@ const ItemDetail: NextPage = () => {
             <div className="flex items-center justify-between space-x-2">
               {!data?.findChatRoom ? (
                 <>
-                  <Button large onClick={onBuyClick} text="buy" />
                   <Button
                     large
                     text={loading ? "Loading" : "Talk to seller"}
@@ -112,6 +122,7 @@ const ItemDetail: NextPage = () => {
                   <Button large text="Go To Chatting Room" />
                 </Link>
               )}
+
               <button
                 onClick={onFavClick}
                 className={cls(
@@ -140,6 +151,19 @@ const ItemDetail: NextPage = () => {
             </div>
           </div>
         </div>
+        <form
+          onSubmit={handleSubmit(onValid)}
+          className="mb-5 flex items-center justify-end space-x-2"
+        >
+          <Input
+            register={register("price", { required: true })}
+            name="buy"
+            required
+            type="string"
+            kind="price"
+          />
+          <Button large text="buy" buy={true} />
+        </form>
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Similar items</h2>
           <div className=" mt-6 grid grid-cols-2 gap-4">
