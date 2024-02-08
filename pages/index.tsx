@@ -4,13 +4,14 @@ import Item from "../components/item";
 import Layout from "../components/layout";
 import useUser from "@/libs/client/useUser";
 import useSWR, { SWRConfig } from "swr";
-import { Product } from "@prisma/client";
+import { Product, Purchase } from "@prisma/client";
 import client from "@/libs/server/client";
 
 export interface ProductWithCount extends Product {
   _count: {
     Fav: number;
   };
+  Purchase: Purchase[];
 }
 
 interface ProductsResponse {
@@ -23,15 +24,17 @@ const Home: NextPage = () => {
   return (
     <Layout title="홈" hasTabBar>
       <div className="flex flex-col space-y-5 divide-y">
-        {data?.products?.map((product) => (
-          <Item
-            id={product.id}
-            key={product.id}
-            title={product.name}
-            price={product.price}
-            hearts={product._count?.Fav || 0}
-          />
-        ))}
+        {data?.products?.map((product) =>
+          product.Purchase?.length === 0 ? (
+            <Item
+              id={product.id}
+              key={product.id}
+              title={product.name}
+              price={product.price}
+              hearts={product._count?.Fav || 0}
+            />
+          ) : null,
+        )}
         <FloatingButton href="/products/upload">
           <svg
             className="h-6 w-6"

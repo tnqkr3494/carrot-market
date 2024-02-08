@@ -16,6 +16,11 @@ async function handler(
             Fav: true,
           },
         },
+        Purchase: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
     res.json({ ok: true, products });

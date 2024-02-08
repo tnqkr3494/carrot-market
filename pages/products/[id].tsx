@@ -56,7 +56,7 @@ const ItemDetail: NextPage = () => {
   const onValid = ({ price }: BuyForm) => {
     if (buyLoading) return;
     if (Number(price) !== data?.product.price) {
-      console.log("price error");
+      alert("price error");
       return;
     }
     buyProduct({});
@@ -72,7 +72,7 @@ const ItemDetail: NextPage = () => {
   // 구매 동작
   useEffect(() => {
     if (buyIt?.ok) {
-      router.push("/");
+      router.push("/profile");
     }
   }, [buyIt]);
 
