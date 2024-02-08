@@ -31,6 +31,10 @@ const ItemDetail: NextPage = () => {
     `/api/products/${router.query.id}/chat?name=${data?.product.user.id}`,
   );
 
+  const [buyProduct, { loading: buyLoading, data: buyIt }] = useMutation<{
+    ok: boolean;
+  }>(`/api/products/${router.query.id}/buy`);
+
   const onFavClick = () => {
     if (!data) return;
     mutate({ ...data, isLinked: !data.isLinked }, false);
@@ -42,11 +46,24 @@ const ItemDetail: NextPage = () => {
     makeChatRoom({});
   };
 
+  const onBuyClick = () => {
+    if (buyLoading) return;
+    buyProduct({});
+  };
+
+  //채팅방 동작
   useEffect(() => {
     if (check?.ok) {
       router.push("/chats");
     }
   }, [check]);
+
+  // 구매 동작
+  useEffect(() => {
+    if (buyIt?.ok) {
+      router.push("/");
+    }
+  }, [buyIt]);
 
   return (
     <Layout canGoBack>
@@ -79,11 +96,14 @@ const ItemDetail: NextPage = () => {
             <p className=" my-6 text-gray-700">{data?.product?.description}</p>
             <div className="flex items-center justify-between space-x-2">
               {!data?.findChatRoom ? (
-                <Button
-                  large
-                  text={loading ? "Loading" : "Talk to seller"}
-                  onClick={onTalkClick}
-                />
+                <>
+                  <Button large onClick={onBuyClick} text="buy" />
+                  <Button
+                    large
+                    text={loading ? "Loading" : "Talk to seller"}
+                    onClick={onTalkClick}
+                  />
+                </>
               ) : (
                 <Link
                   className="w-full"
