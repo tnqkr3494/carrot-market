@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import Button from "@/components/button";
 import TextArea from "@/components/textarea";
 import Layout from "@/components/layout";
-import Input from "@/components/input";
 import useMutation from "@/libs/client/useMutation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -20,10 +19,27 @@ interface UploadReviewResponse {
 
 const Review: NextPage = () => {
   const router = useRouter();
-  const { register, handleSubmit } = useForm<ReviewForm>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ReviewForm>();
   const [uploadReview, { loading, data }] = useMutation<UploadReviewResponse>(
     `/api/products/${router.query.id}/review`,
   );
+
+  const validateScore = (value: any) => {
+    const score = parseInt(value, 10);
+    if (isNaN(score)) {
+      return "Score must be a number";
+    }
+
+    if (score < 0 || score > 5) {
+      return "Score must be between 0 and 5";
+    }
+
+    return true; // 유효성 검증 통과
+  };
 
   const onValid = ({ score, review }: ReviewForm) => {
     if (loading) return;
@@ -59,7 +75,12 @@ const Review: NextPage = () => {
           </label>
         </div>
         <span>score </span>
-        <input required {...register("score", { required: true })} />
+        <input
+          required
+          {...register("score", { required: true, validate: validateScore })}
+          placeholder="write 0 ~ 5 Integer score"
+        />
+        <p>{errors.score?.message}</p>
         <TextArea
           register={register("review", { required: true })}
           name="review"

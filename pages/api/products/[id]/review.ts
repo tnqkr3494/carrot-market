@@ -13,16 +13,26 @@ async function handler(
     session: { user },
   } = req;
 
-  const findSeller = await client.product.findUnique({
+  const product = await client.product.findUnique({
     where: {
       id: Number(id),
     },
+    select: {
+      name: true,
+      user: {
+        select: {
+          id: true,
+        },
+      },
+    },
   });
+
+  const reviewDetail = `물품 : ${product?.name} ${review}`;
 
   const newReview = await client.review.create({
     data: {
       score: Number(score),
-      review,
+      review: reviewDetail,
       createdBy: {
         connect: {
           id: user?.id,
@@ -30,7 +40,7 @@ async function handler(
       },
       createdFor: {
         connect: {
-          id: findSeller?.userId,
+          id: product?.user.id,
         },
       },
     },
