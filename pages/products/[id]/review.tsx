@@ -5,11 +5,36 @@ import Button from "@/components/button";
 import TextArea from "@/components/textarea";
 import Layout from "@/components/layout";
 import Input from "@/components/input";
+import useMutation from "@/libs/client/useMutation";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+
+interface ReviewForm {
+  score: string;
+  review: string;
+}
+
+interface UploadReviewResponse {
+  ok: boolean;
+}
 
 const Review: NextPage = () => {
-  const { register, handleSubmit } = useForm();
+  const router = useRouter();
+  const { register, handleSubmit } = useForm<ReviewForm>();
+  const [uploadReview, { loading, data }] = useMutation<UploadReviewResponse>(
+    `/api/products/${router.query.id}/review`,
+  );
 
-  const onValid = () => {};
+  const onValid = ({ score, review }: ReviewForm) => {
+    if (loading) return;
+    uploadReview({ score, review });
+  };
+
+  useEffect(() => {
+    if (data?.ok) {
+      router.push("/");
+    }
+  }, [data, router]);
 
   return (
     <Layout canGoBack title="리뷰">
@@ -33,13 +58,6 @@ const Review: NextPage = () => {
             <input className="hidden" type="file" />
           </label>
         </div>
-        <Input
-          register={register("title", { required: true })}
-          required
-          label="Title"
-          name="title"
-          type="text"
-        />
         <span>score </span>
         <input required {...register("score", { required: true })} />
         <TextArea
