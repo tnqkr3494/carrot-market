@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
-import Button from "../../components/button";
-import Layout from "../../components/layout";
+import Button from "../../../components/button";
+import Layout from "../../../components/layout";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -72,7 +72,7 @@ const ItemDetail: NextPage = () => {
   // 구매 동작
   useEffect(() => {
     if (buyIt?.ok) {
-      router.push("/profile");
+      router.push("/profile/bought");
     }
   }, [buyIt]);
 
