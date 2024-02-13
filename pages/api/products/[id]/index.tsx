@@ -25,6 +25,11 @@ async function handler(
           avatar: true,
         },
       },
+      Purchase: {
+        select: {
+          id: true,
+        },
+      },
     },
   });
 
