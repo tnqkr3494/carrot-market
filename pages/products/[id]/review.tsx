@@ -15,6 +15,7 @@ interface ReviewForm {
 
 interface UploadReviewResponse {
   ok: boolean;
+  error?: string;
 }
 
 const Review: NextPage = () => {
@@ -89,6 +90,7 @@ const Review: NextPage = () => {
         />
         <Button text="Upload a review" />
       </form>
+      {data?.error ? <p>{data.error}</p> : null}
     </Layout>
   );
 };
