@@ -4,7 +4,7 @@ import Item from "../components/item";
 import Layout from "../components/layout";
 import useUser from "@/libs/client/useUser";
 import useSWR, { SWRConfig } from "swr";
-import { Product, Purchase } from "@prisma/client";
+import { Product, Purchase, Review } from "@prisma/client";
 import client from "@/libs/server/client";
 
 export interface ProductWithCount extends Product {
@@ -12,6 +12,7 @@ export interface ProductWithCount extends Product {
     Fav: number;
   };
   Purchase: Purchase[];
+  Review: Review[];
 }
 
 interface ProductsResponse {
@@ -23,7 +24,7 @@ const Home: NextPage = () => {
   const { data } = useSWR<ProductsResponse>("/api/products");
   return (
     <Layout title="홈" hasTabBar>
-      <div className="flex flex-col space-y-5 divide-y">
+      <div className="flex flex-col divide-y">
         {data?.products?.map((product) =>
           product.Purchase?.length === 0 ? (
             <Item

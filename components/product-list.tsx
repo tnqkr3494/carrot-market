@@ -19,18 +19,31 @@ export default function ProductList({ kind }: ProductListProps) {
 
   return (
     <>
-      <div className="flex flex-col space-y-5 divide-y  pb-10">
+      <div className="flex flex-col divide-y  pb-10">
         {data
-          ? data[kind]?.map((record) => (
-              <Item
-                key={record.id}
-                id={record.product.id}
-                title={record.product.name}
-                price={record.product.price}
-                hearts={record.product._count.Fav}
-                buy={true}
-              />
-            ))
+          ? data[kind]?.map((record) =>
+              (kind === "purchases" && record.product.Review.length === 1) ||
+              kind === "sales" ? (
+                <Item
+                  key={record.id}
+                  id={record.product.id}
+                  title={record.product.name}
+                  price={record.product.price}
+                  hearts={record.product._count.Fav}
+                  block
+                  kind={kind}
+                />
+              ) : (
+                <Item
+                  key={record.id}
+                  id={record.product.id}
+                  title={record.product.name}
+                  price={record.product.price}
+                  hearts={record.product._count.Fav}
+                  buy={kind === "favs" ? false : true}
+                />
+              ),
+            )
           : null}
       </div>
     </>

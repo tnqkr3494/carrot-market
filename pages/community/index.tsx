@@ -28,7 +28,7 @@ const Community: NextPage<PostsResponse> = ({ posts }) => {
   // );
   return (
     <Layout hasTabBar title="동네생활">
-      <div className="space-y-4 divide-y-[2px]">
+      <div className="divide-y-[2px]">
         {posts?.map((post) => (
           <Link key={post.id} href={`/community/${post.id}`} legacyBehavior>
             <a className="flex cursor-pointer flex-col items-start pt-4">

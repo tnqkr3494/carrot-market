@@ -23,6 +23,11 @@ async function handler(
               Fav: true,
             },
           },
+          Review: {
+            select: {
+              id: true,
+            },
+          },
         },
       },
     },
