@@ -6,6 +6,8 @@ import useUser from "@/libs/client/useUser";
 import useSWR, { SWRConfig } from "swr";
 import { Product, Purchase, Review } from "@prisma/client";
 import client from "@/libs/server/client";
+import { useState } from "react";
+import Modal from "@/components/modal-portal";
 
 export interface ProductWithCount extends Product {
   _count: {
@@ -21,40 +23,47 @@ interface ProductsResponse {
 }
 
 const Home: NextPage = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { data } = useSWR<ProductsResponse>("/api/products");
   return (
-    <Layout title="홈" hasTabBar>
-      <div className="flex flex-col divide-y">
-        {data?.products?.map((product) =>
-          product.Purchase?.length === 0 ? (
-            <Item
-              id={product.id}
-              key={product.id}
-              title={product.name}
-              price={product.price}
-              hearts={product._count?.Fav || 0}
-            />
-          ) : null,
-        )}
-        <FloatingButton href="/products/upload">
-          <svg
-            className="h-6 w-6"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-            />
-          </svg>
-        </FloatingButton>
-      </div>
-    </Layout>
+    <>
+      <Layout title="홈" hasTabBar>
+        <div className="flex flex-col divide-y">
+          {data?.products?.map((product) =>
+            product.Purchase?.length === 0 ? (
+              <Item
+                id={product.id}
+                key={product.id}
+                title={product.name}
+                price={product.price}
+                hearts={product._count?.Fav || 0}
+              />
+            ) : null,
+          )}
+          <FloatingButton href="/products/upload">
+            <svg
+              className="h-6 w-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              />
+            </svg>
+          </FloatingButton>
+        </div>
+      </Layout>
+      <button onClick={() => setIsModalOpen(true)}>모달 열기</button>
+      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div>나는 인간이다</div>
+      </Modal>
+    </>
   );
 };
 

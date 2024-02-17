@@ -13,6 +13,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     >
       <div className="mx-auto w-full max-w-xl">
         <Component {...pageProps} />
+        <div id="global-modal"></div>
       </div>
       <Script
         src="https://developers.kakao.com/sdk/js/kakao.js"
