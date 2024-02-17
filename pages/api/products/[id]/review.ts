@@ -29,11 +29,19 @@ async function handler(
           userId: true,
         },
       },
+      Review: {
+        select: {
+          id: true,
+        },
+      },
     },
   });
 
-  //물건을 구매한 유저와 현재 로그인 돼있는 유저가 같으면(구매한 유저가 리뷰남길 때)
-  if (product?.Purchase[0].userId === user?.id) {
+  //물건을 구매한 유저와 현재 로그인 돼있는 유저가 같으면(구매한 유저가 리뷰남길 때), 중복 리뷰 방지
+  if (
+    product?.Purchase[0].userId === user?.id &&
+    product?.Review.length === 0
+  ) {
     const reviewDetail = `물품 : ${product?.name} ${review}`;
 
     const newReview = await client.review.create({
@@ -50,6 +58,11 @@ async function handler(
             id: product?.user.id,
           },
         },
+        product: {
+          connect: {
+            id: Number(id),
+          },
+        },
       },
     });
 
@@ -59,6 +72,15 @@ async function handler(
   }
   // 물건을 구매한 유저와 로그인 돼있는 유저가 다를 때(물건을 구매하지 않은 유저가 url로 direct하게와서 리뷰남기려고 할 때)
   else {
+    if (
+      product?.Review.length !== 0 &&
+      product?.Purchase[0].userId === user?.id
+    ) {
+      res.json({
+        ok: false,
+        error: "You already leave a review",
+      });
+    }
     res.json({
       ok: false,
       error: "You do not have permission to leave a review.",

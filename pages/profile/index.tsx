@@ -21,7 +21,7 @@ const Profile: NextPage = () => {
               <Link href="/profile/edit" legacyBehavior>
                 <a className="text-sm text-gray-700">Edit profile &rarr;</a>
               </Link>
-              <Link href="/profile/edit" legacyBehavior>
+              <Link href="/profile/reviews" legacyBehavior>
                 <a className="ml-3 text-sm text-gray-700">See reviews &rarr;</a>
               </Link>
             </div>

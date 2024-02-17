@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Layout from "../../components/layout";
 import ProductList from "@/components/product-list";
 
-const Loved: NextPage = () => {
+const Sold: NextPage = () => {
   return (
     <Layout title="판매내역" canGoBack>
       <ProductList kind="sales" />
@@ -10,4 +10,4 @@ const Loved: NextPage = () => {
   );
 };
 
-export default Loved;
+export default Sold;

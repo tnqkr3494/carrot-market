@@ -62,6 +62,7 @@ model Product {
   Sale        Sale[]
   Purchase    Purchase[]
   ChatRoom    ChatRoom[]
+  Review      Review[]
 
   @@index([userId]) //오류 해결 방법(user줄에 @relation부분이 오류가 발생)
 }
@@ -129,11 +130,14 @@ model Review {
   score        Int
   createdBy    User     @relation(name: "writtenReviews", fields: [createdById], references: [id], onDelete: Cascade)
   createdFor   User     @relation(name: "receivedReviews", fields: [createdForId], references: [id], onDelete: Cascade)
+  product      Product  @relation(fields: [productId], references: [id])
   createdById  Int
   createdForId Int
+  productId    Int
 
   @@index([createdById])
   @@index([createdForId])
+  @@index([productId])
 }
 
 model Sale {
