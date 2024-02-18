@@ -43,7 +43,9 @@ const ItemDetail: NextPage = () => {
   const [buyProduct, { loading: buyLoading, data: buyIt }] = useMutation<{
     ok: boolean;
   }>(`/api/products/${router.query.id}/buy`);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInvalidPriceModalOpen, setIsInvalidPriceModalOpen] = useState(false);
+  const [isBuyConfirmationModalOpen, setIsBuyConfirmationModalOpen] =
+    useState(false);
 
   const onFavClick = () => {
     if (!data) return;
@@ -59,10 +61,10 @@ const ItemDetail: NextPage = () => {
   const onValid = ({ price }: BuyForm) => {
     if (buyLoading) return;
     if (Number(price) !== data?.product.price) {
-      setIsModalOpen(true);
+      setIsInvalidPriceModalOpen(true);
       return;
     }
-    buyProduct({});
+    setIsBuyConfirmationModalOpen(true);
   };
 
   //채팅방 동작
@@ -208,12 +210,23 @@ const ItemDetail: NextPage = () => {
           Loading...
         </div>
       )}
-      {isModalOpen ? (
-        <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      {isInvalidPriceModalOpen && (
+        <Modal
+          open={isInvalidPriceModalOpen}
+          onClose={() => setIsInvalidPriceModalOpen(false)}
+        >
           <div>올바른 가격을 입력해주세요!</div>
         </Modal>
-      ) : (
-        ""
+      )}
+
+      {isBuyConfirmationModalOpen && (
+        <Modal
+          open={isBuyConfirmationModalOpen}
+          onClose={() => setIsBuyConfirmationModalOpen(false)}
+          onGo={() => buyProduct({})}
+        >
+          <div>구매하시겠습니까?</div>
+        </Modal>
       )}
     </Layout>
   );
