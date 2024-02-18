@@ -47,7 +47,7 @@ const EditProfile: NextPage = () => {
 
   const onValid = ({ email, phone, name }: EditProfileForm) => {
     if (loading) return;
-    if (email === "" && phone === "" && name === "") {
+    if (email === "" && phone === "") {
       return setError("formErrors", {
         message: "Email OR Phone number are required. You need to choose one.",
       });

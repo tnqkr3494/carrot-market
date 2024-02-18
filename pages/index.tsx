@@ -59,10 +59,6 @@ const Home: NextPage = () => {
           </FloatingButton>
         </div>
       </Layout>
-      <button onClick={() => setIsModalOpen(true)}>모달 열기</button>
-      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div className="text-center">나는 인간이다</div>
-      </Modal>
     </>
   );
 };

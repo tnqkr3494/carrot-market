@@ -10,6 +10,7 @@ import { cls } from "@/libs/client/utils";
 import { useEffect, useState } from "react";
 import Input from "@/components/input";
 import { useForm } from "react-hook-form";
+import Modal from "@/components/modal-portal";
 
 interface ProductWithUser extends Product {
   user: User;
@@ -42,6 +43,7 @@ const ItemDetail: NextPage = () => {
   const [buyProduct, { loading: buyLoading, data: buyIt }] = useMutation<{
     ok: boolean;
   }>(`/api/products/${router.query.id}/buy`);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onFavClick = () => {
     if (!data) return;
@@ -57,7 +59,7 @@ const ItemDetail: NextPage = () => {
   const onValid = ({ price }: BuyForm) => {
     if (buyLoading) return;
     if (Number(price) !== data?.product.price) {
-      alert("price error");
+      setIsModalOpen(true);
       return;
     }
     buyProduct({});
@@ -205,6 +207,13 @@ const ItemDetail: NextPage = () => {
         <div className="flex h-screen items-center justify-center text-2xl font-bold text-orange-500">
           Loading...
         </div>
+      )}
+      {isModalOpen ? (
+        <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <div>올바른 가격을 입력해주세요!</div>
+        </Modal>
+      ) : (
+        ""
       )}
     </Layout>
   );

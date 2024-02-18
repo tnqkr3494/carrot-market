@@ -6,7 +6,8 @@ import TextArea from "@/components/textarea";
 import Layout from "@/components/layout";
 import useMutation from "@/libs/client/useMutation";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Modal from "@/components/modal-portal";
 
 interface ReviewForm {
   score: string;
@@ -28,6 +29,7 @@ const Review: NextPage = () => {
   const [uploadReview, { loading, data }] = useMutation<UploadReviewResponse>(
     `/api/products/${router.query.id}/review`,
   );
+  const [isModalOpen, setIsModalOpen] = useState(true);
 
   const validateScore = (value: any) => {
     const score = parseInt(value, 10);
@@ -81,7 +83,7 @@ const Review: NextPage = () => {
           {...register("score", { required: true, validate: validateScore })}
           placeholder="write 0 ~ 5 Integer score"
         />
-        <p>{errors.score?.message}</p>
+        <p className="font-bold text-orange-500">{errors.score?.message}</p>
         <TextArea
           register={register("review", { required: true })}
           name="review"
@@ -90,7 +92,11 @@ const Review: NextPage = () => {
         />
         <Button text="Upload a review" />
       </form>
-      {data?.error ? <p>{data.error}</p> : null}
+      {data?.error ? (
+        <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <p>{data.error}</p>
+        </Modal>
+      ) : null}
     </Layout>
   );
 };
