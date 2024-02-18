@@ -61,7 +61,7 @@ const Home: NextPage = () => {
       </Layout>
       <button onClick={() => setIsModalOpen(true)}>모달 열기</button>
       <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div>나는 인간이다</div>
+        <div className="text-center">나는 인간이다</div>
       </Modal>
     </>
   );
