@@ -14,6 +14,7 @@ export function middleware(req: NextRequest, ev: NextFetchEvent) {
   if (!req.url.includes("/api")) {
     if (
       !req.url.includes("/enter") &&
+      !req.url.includes("/forms") &&
       !req.cookies.has("carrotsession") &&
       !req.url.includes("/_next/")
     ) {

@@ -23,7 +23,6 @@ interface ProductsResponse {
 }
 
 const Home: NextPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { data } = useSWR<ProductsResponse>("/api/products");
   return (
     <>

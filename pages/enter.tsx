@@ -6,10 +6,10 @@ import { cls } from "../libs/client/utils";
 import { useForm } from "react-hook-form";
 import useMutation from "@/libs/client/useMutation";
 import { useRouter } from "next/router";
-import { useSWRConfig } from "swr";
 import dynamic from "next/dynamic";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import Modal from "@/components/modal-portal";
 
 const BS = dynamic(
   //@ts-ignore
@@ -34,9 +34,11 @@ interface TokenForm {
 
 interface MutationResult {
   ok: boolean;
+  error?: string;
 }
 
 const Enter: NextPage = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [enter, { loading, data, error }] =
     useMutation<MutationResult>("/api/users/enter");
   const [confirmToken, { loading: tokenLoading, data: tokenData }] =
@@ -60,6 +62,12 @@ const Enter: NextPage = () => {
   const onTokenValid = (validForm: TokenForm) => {
     confirmToken(validForm);
   };
+
+  useEffect(() => {
+    if (!data?.ok && data?.error) {
+      setIsModalOpen(true);
+    }
+  }, [data?.ok, data?.error]);
 
   const router = useRouter();
   useEffect(() => {
@@ -193,6 +201,15 @@ const Enter: NextPage = () => {
           </div>
         </div>
       </div>
+      {isModalOpen && (
+        <Modal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onGo={() => router.push("/forms")}
+        >
+          <div>{data?.error}</div>
+        </Modal>
+      )}
     </div>
   );
 };

@@ -10,25 +10,30 @@ async function handler(
   const { phone, email } = req.body;
   const user = phone ? { phone } : email ? { email } : null;
   if (!user) {
+    console.log("error");
     return res.status(400).json({ ok: false });
   }
-  const payload = Math.floor(100000 + Math.random() * 900000) + "";
-  const token = await client.token.create({
-    data: {
-      payload,
-      user: {
-        connectOrCreate: {
-          where: {
-            ...user,
-          },
-          create: {
-            name: "Anonymous",
-            ...user,
-          },
+
+  // Check if the user already exists
+  const existingUser = await client.user.findUnique({
+    where: user,
+  });
+
+  if (existingUser) {
+    // If the user already exists, generate a payload and create a token
+    const payload = Math.floor(100000 + Math.random() * 900000) + "";
+    const token = await client.token.create({
+      data: {
+        payload,
+        user: {
+          connect: user,
         },
       },
-    },
-  });
+    });
+    return res.json({ ok: true });
+  } else {
+    return res.json({ ok: false, error: "You have to Sign Up" });
+  }
   /*if (email) {
     const mailOptions = {
       from: process.env.MAIL_ID,
@@ -51,7 +56,6 @@ async function handler(
     smtpTransport.close();
     console.log(result);
   }*/
-  return res.json({ ok: true });
 }
 
 export default withHandler({ methods: ["POST"], handler, isPrivate: false });
