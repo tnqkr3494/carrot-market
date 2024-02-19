@@ -32,7 +32,11 @@ async function handler(
     });
     return res.json({ ok: true });
   } else {
-    return res.json({ ok: false, error: "You have to Sign Up" });
+    return res.json({
+      ok: false,
+      error: "You have to Sign Up",
+      id: Date.now(),
+    });
   }
   /*if (email) {
     const mailOptions = {

@@ -35,6 +35,7 @@ interface TokenForm {
 interface MutationResult {
   ok: boolean;
   error?: string;
+  id?: Date;
 }
 
 const Enter: NextPage = () => {
@@ -47,6 +48,8 @@ const Enter: NextPage = () => {
   const { register: tokenRegister, handleSubmit: tokenHandleSubmit } =
     useForm<TokenForm>();
   const [method, setMethod] = useState<"email" | "phone">("email");
+  console.log(isModalOpen);
+
   const onEmailClick = () => {
     reset();
     setMethod("email");
@@ -64,10 +67,10 @@ const Enter: NextPage = () => {
   };
 
   useEffect(() => {
-    if (!data?.ok && data?.error) {
+    if (!data?.ok && data?.error && data.id) {
       setIsModalOpen(true);
     }
-  }, [data?.ok, data?.error]);
+  }, [data?.ok, data?.error, data?.id]);
 
   const router = useRouter();
   useEffect(() => {
