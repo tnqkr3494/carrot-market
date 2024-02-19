@@ -23,12 +23,18 @@ interface ProductsResponse {
 }
 
 const Home: NextPage = () => {
-  const { data } = useSWR<ProductsResponse>("/api/products");
+  const [page, setPage] = useState(1);
+  const { data } = useSWR<ProductsResponse>(`/api/products?page=${page}`);
+  const onPageClick = (num: number) => {
+    setPage(num);
+  };
   return (
     <>
       <Layout title="홈" hasTabBar>
         <div className="flex flex-col divide-y">
           {data?.products?.map((product) =>
+            // 이미 팔린 물건인지 확인하는 작업은 백엔드에서 해야겠다(take에서 가져오는데 그 가져오는 것들 중 팔린물건이 있으면
+            // 예를들어 5개를 가져왔는데 5개가 페이지에 보여질 줄 알았지만 3개가 팔린물건이면 2개만 보여서 pagination하기 힘들어짐.
             product.Purchase?.length === 0 ? (
               <Item
                 id={product.id}
@@ -39,6 +45,17 @@ const Home: NextPage = () => {
               />
             ) : null,
           )}
+          <div className="flex items-center justify-center space-x-2 pt-3">
+            {[1, 2, 3].map((num) => (
+              <button
+                onClick={() => onPageClick(num)}
+                key={num}
+                className="h-10 w-10 rounded-md bg-orange-500"
+              >
+                {num}
+              </button>
+            ))}
+          </div>
           <FloatingButton href="/products/upload">
             <svg
               className="h-6 w-6"
@@ -82,7 +99,9 @@ const Page: NextPage<{ products: Product[] }> = ({ products }) => {
 
 export async function getServerSideProps() {
   console.log("ssr");
-  const products = await client.product.findMany({});
+  const products = await client.product.findMany({
+    take: 5,
+  });
   return {
     props: {
       products: JSON.parse(JSON.stringify(products)), //Date.now()함수에 값으로 들어온 내용을 인식을 못해서 한 변환과정

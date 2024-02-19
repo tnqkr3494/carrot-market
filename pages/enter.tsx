@@ -48,8 +48,6 @@ const Enter: NextPage = () => {
   const { register: tokenRegister, handleSubmit: tokenHandleSubmit } =
     useForm<TokenForm>();
   const [method, setMethod] = useState<"email" | "phone">("email");
-  console.log(isModalOpen);
-
   const onEmailClick = () => {
     reset();
     setMethod("email");
