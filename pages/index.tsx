@@ -8,6 +8,9 @@ import { Product, Purchase, Review } from "@prisma/client";
 import client from "@/libs/server/client";
 import { useState } from "react";
 import Modal from "@/components/modal-portal";
+import YourComponent from "@/components/page-button";
+import { useRecoilValue } from "recoil";
+import { pageState } from "@/atoms";
 
 export interface ProductWithCount extends Product {
   _count: {
@@ -23,11 +26,9 @@ interface ProductsResponse {
 }
 
 const Home: NextPage = () => {
-  const [page, setPage] = useState(1);
+  const page = useRecoilValue(pageState);
   const { data } = useSWR<ProductsResponse>(`/api/products?page=${page}`);
-  const onPageClick = (num: number) => {
-    setPage(num);
-  };
+
   return (
     <>
       <Layout title="홈" hasTabBar>
@@ -46,15 +47,7 @@ const Home: NextPage = () => {
             ) : null,
           )}
           <div className="flex items-center justify-center space-x-2 pt-3">
-            {[1, 2, 3].map((num) => (
-              <button
-                onClick={() => onPageClick(num)}
-                key={num}
-                className="h-10 w-10 rounded-md bg-orange-500"
-              >
-                {num}
-              </button>
-            ))}
+            <YourComponent />
           </div>
           <FloatingButton href="/products/upload">
             <svg

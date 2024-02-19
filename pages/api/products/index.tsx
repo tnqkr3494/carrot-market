@@ -12,8 +12,8 @@ async function handler(
     query: { page },
   } = req;
 
-  const take = 5;
-  let skip = (Number(page) - 1) * 5;
+  const take = 2;
+  let skip = (Number(page) - 1) * 2;
 
   if (req.method == "GET") {
     const products = await client.product.findMany({
