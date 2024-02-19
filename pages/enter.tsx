@@ -202,6 +202,8 @@ const Enter: NextPage = () => {
         </div>
       </div>
       {isModalOpen && (
+        // router.push("/forms")가 안됐던 이유는 middleware에서 막았었기 때문.
+        // 따라서 middleware수정해서 진행함.
         <Modal
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}
