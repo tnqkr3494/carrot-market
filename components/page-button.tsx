@@ -1,6 +1,5 @@
-import { pageState } from "@/atoms";
-import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { maxPageStat, maxPageState, nextPageState, pageState } from "@/atoms";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 const renderPageButtons = (start, end, currentPage, onPageClick) => {
   const buttons = [];
@@ -8,8 +7,8 @@ const renderPageButtons = (start, end, currentPage, onPageClick) => {
     buttons.push(
       <button
         key={i}
-        className={`h-10 w-10 rounded-md bg-orange-500 ${
-          i === currentPage ? "bg-gray-500" : ""
+        className={`h-10 w-10 rounded-md ${
+          i === currentPage ? "bg-gray-500" : " bg-orange-500"
         }`}
         onClick={() => onPageClick(i)}
       >
@@ -21,17 +20,17 @@ const renderPageButtons = (start, end, currentPage, onPageClick) => {
 };
 
 const YourComponent = () => {
-  const totalItems = 13;
+  const totalItems = 11;
   const itemsPerPage = 2;
   const itemsPerGroup = 5;
 
   const [currentPage, setCurrentPage] = useRecoilState(pageState);
+  const nextPage = useRecoilValue(nextPageState);
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  useEffect(() => {
-    console.log("Current Page:", currentPage);
-  }, [currentPage]);
+  const setMaxPage = useSetRecoilState(maxPageState);
+  setMaxPage(Math.ceil(totalPages / itemsPerGroup));
 
   const onPageClick = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -54,7 +53,7 @@ const YourComponent = () => {
   return (
     <div>
       {/* 페이지 버튼을 그룹화하여 보여줌 */}
-      {renderPaginationGroups()}
+      {renderPaginationGroups()[nextPage]}
     </div>
   );
 };

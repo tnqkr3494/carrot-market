@@ -2,15 +2,11 @@ import type { NextPage } from "next";
 import FloatingButton from "../components/floating-button";
 import Item from "../components/item";
 import Layout from "../components/layout";
-import useUser from "@/libs/client/useUser";
-import useSWR, { SWRConfig } from "swr";
+import useSWR from "swr";
 import { Product, Purchase, Review } from "@prisma/client";
-import client from "@/libs/server/client";
-import { useState } from "react";
-import Modal from "@/components/modal-portal";
 import YourComponent from "@/components/page-button";
-import { useRecoilValue } from "recoil";
-import { pageState } from "@/atoms";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { maxPageState, nextPageState, pageState } from "@/atoms";
 
 export interface ProductWithCount extends Product {
   _count: {
@@ -27,7 +23,18 @@ interface ProductsResponse {
 
 const Home: NextPage = () => {
   const page = useRecoilValue(pageState);
+  const setNextPage = useSetRecoilState(nextPageState);
+  const maxPage = useRecoilValue(maxPageState);
   const { data } = useSWR<ProductsResponse>(`/api/products?page=${page}`);
+
+  const onPrevClick = () => {
+    setNextPage((prev) => (prev - 1 < 0 ? (prev = 0) : prev - 1));
+  };
+  const onNextClick = () => {
+    setNextPage((prev) =>
+      prev + 1 > maxPage - 1 ? (prev = maxPage - 1) : prev + 1,
+    );
+  };
 
   return (
     <>
@@ -47,7 +54,9 @@ const Home: NextPage = () => {
             ) : null,
           )}
           <div className="flex items-center justify-center space-x-2 pt-3">
+            <button onClick={onPrevClick}>◀️</button>
             <YourComponent />
+            <button onClick={onNextClick}>▶️</button>
           </div>
           <FloatingButton href="/products/upload">
             <svg
@@ -72,34 +81,4 @@ const Home: NextPage = () => {
   );
 };
 
-const Page: NextPage<{ products: Product[] }> = ({ products }) => {
-  return (
-    <SWRConfig
-      value={{
-        fallback: {
-          "/api/products": {
-            ok: true,
-            products,
-          },
-        },
-      }}
-    >
-      <Home />
-    </SWRConfig>
-  );
-};
-//swr과 ssr을 같이 쓰려고 swrconfig를 이용함.
-
-export async function getServerSideProps() {
-  console.log("ssr");
-  const products = await client.product.findMany({
-    take: 5,
-  });
-  return {
-    props: {
-      products: JSON.parse(JSON.stringify(products)), //Date.now()함수에 값으로 들어온 내용을 인식을 못해서 한 변환과정
-    },
-  };
-}
-
-export default Page;
+export default Home;
