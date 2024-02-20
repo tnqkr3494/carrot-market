@@ -17,11 +17,6 @@ async function handler(
 
   if (req.method == "GET") {
     const products = await client.product.findMany({
-      where: {
-        Purchase: {
-          none: {},
-        },
-      },
       take,
       skip,
 
@@ -29,6 +24,11 @@ async function handler(
         _count: {
           select: {
             Fav: true,
+          },
+        },
+        Purchase: {
+          select: {
+            id: true,
           },
         },
       },

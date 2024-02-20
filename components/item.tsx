@@ -1,3 +1,4 @@
+import { cls } from "@/libs/client/utils";
 import Link from "next/link";
 
 interface ItemProps {
@@ -8,6 +9,7 @@ interface ItemProps {
   buy?: boolean;
   block?: boolean;
   kind?: "sales" | "favs" | "purchases" | "";
+  soldOut?: boolean;
 }
 
 export default function Item({
@@ -18,6 +20,7 @@ export default function Item({
   buy = false,
   block = false,
   kind = "",
+  soldOut = false,
 }: ItemProps) {
   return (
     <>
@@ -76,7 +79,15 @@ export default function Item({
           href={buy ? `/products/${id}/review` : `/products/${id}`}
           legacyBehavior
         >
-          <a className="flex cursor-pointer justify-between p-5 px-4">
+          <a
+            className={cls(
+              "flex cursor-pointer justify-between p-5 px-4",
+              soldOut ? "pointer-events-none cursor-default bg-red-400" : "",
+            )}
+            onClick={(e) => {
+              soldOut && e.preventDefault();
+            }}
+          >
             <div className="flex space-x-4">
               <div className="h-20 w-20 rounded-md bg-gray-400" />
               <div className="flex flex-col pt-2">
