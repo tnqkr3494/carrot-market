@@ -6,9 +6,16 @@ interface ModalProps {
   onClose: () => void;
   children: ReactNode;
   onGo?: () => void;
+  signUp: boolean;
 }
 
-const Modal = ({ open, onClose, children, onGo = undefined }: ModalProps) => {
+const Modal = ({
+  open,
+  onClose,
+  children,
+  onGo = undefined,
+  signUp = false,
+}: ModalProps) => {
   if (!open) return null;
   return ReactDOM.createPortal(
     <>
@@ -32,12 +39,14 @@ const Modal = ({ open, onClose, children, onGo = undefined }: ModalProps) => {
               </button>
             </div>
           ) : null}
-          <button
-            className="absolute right-2 top-2 cursor-pointer"
-            onClick={onClose}
-          >
-            ❌
-          </button>
+          {!signUp ? (
+            <button
+              className="absolute right-2 top-2 cursor-pointer"
+              onClick={onClose}
+            >
+              ❌
+            </button>
+          ) : null}
         </div>
       </div>
     </>,

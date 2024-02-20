@@ -1,8 +1,9 @@
 import Button from "@/components/button";
 import Layout from "@/components/layout";
+import Modal from "@/components/modal-portal";
 import useMutation from "@/libs/client/useMutation";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 
 interface LoginForm {
@@ -29,9 +30,14 @@ export default function Forms() {
     signUp(data);
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   useEffect(() => {
     if (data?.ok) {
-      router.push("/enter");
+      setIsModalOpen(true);
+      const timeoutId = setTimeout(() => {
+        router.push("/enter");
+      }, 2000);
     }
   }, [data?.ok]);
 
@@ -71,6 +77,17 @@ export default function Forms() {
         {data?.error ? data.error : null}
         <Button text={loading ? "Loading..." : "SignUp"} large />
       </form>
+      {isModalOpen && (
+        // router.push("/forms")가 안됐던 이유는 middleware에서 막았었기 때문.
+        // 따라서 middleware수정해서 진행함.
+        <Modal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          signUp={true}
+        >
+          <div>회원가입이 완료되었습니다!!!</div>
+        </Modal>
+      )}
     </div>
   );
 }
