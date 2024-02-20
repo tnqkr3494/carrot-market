@@ -1,4 +1,4 @@
-import { maxPageStat, maxPageState, nextPageState, pageState } from "@/atoms";
+import { maxPageState, nextPageState, pageState } from "@/atoms";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 const renderPageButtons = (start, end, currentPage, onPageClick) => {

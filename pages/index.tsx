@@ -40,19 +40,18 @@ const Home: NextPage = () => {
     <>
       <Layout title="홈" hasTabBar>
         <div className="flex flex-col divide-y">
-          {data?.products?.map((product) =>
+          {data?.products?.map((product) => (
             // 이미 팔린 물건인지 확인하는 작업은 백엔드에서 해야겠다(take에서 가져오는데 그 가져오는 것들 중 팔린물건이 있으면
             // 예를들어 5개를 가져왔는데 5개가 페이지에 보여질 줄 알았지만 3개가 팔린물건이면 2개만 보여서 pagination하기 힘들어짐.
-            product.Purchase?.length === 0 ? (
-              <Item
-                id={product.id}
-                key={product.id}
-                title={product.name}
-                price={product.price}
-                hearts={product._count?.Fav || 0}
-              />
-            ) : null,
-          )}
+
+            <Item
+              id={product.id}
+              key={product.id}
+              title={product.name}
+              price={product.price}
+              hearts={product._count?.Fav || 0}
+            />
+          ))}
           <div className="flex items-center justify-center space-x-2 pt-3">
             <button onClick={onPrevClick}>◀️</button>
             <YourComponent />
